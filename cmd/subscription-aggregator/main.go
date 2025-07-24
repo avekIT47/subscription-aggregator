@@ -1,7 +1,7 @@
 package main
 
 import (
-	"subscription-aggregator/config"
+	"subscription-aggregator/internal/config"
 	"subscription-aggregator/internal/handler"
 	"subscription-aggregator/internal/middleware"
 	"subscription-aggregator/internal/repository"

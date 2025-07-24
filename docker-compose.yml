@@ -24,7 +24,8 @@ services:
       - .env
     volumes:
       - .:/app
-    command: ["go", "run", "cmd/subscription-aggregator/main.go"]
+    working_dir: /app
+    command: go run cmd/subscription-aggregator/main.go
 
 volumes:
   postgres_data:
