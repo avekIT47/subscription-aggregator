@@ -32,7 +32,7 @@ func main() {
 	logger.InitLogger()
 
 	if err := migrations.AutoMigrate(db); err != nil {
-		logger.Log.Fatalf("ошибка начала переноса: %v", err)
+		logger.Log.Fatalf("transfer start error: %v", err)
 	}
 
 	subRepo := repository.NewSubscriptionRepository(db)
@@ -56,8 +56,8 @@ func main() {
 		}
 	}
 
-	logger.Log.Info("запуск сервера. порт :8080")
+	logger.Log.Info("starting the server. Port :8080")
 	if err := router.Run(":8080"); err != nil {
-		logger.Log.Fatalf("ошибка запуска сервера: %v", err)
+		logger.Log.Fatalf("server startup error: %v", err)
 	}
 }

@@ -23,12 +23,12 @@ func LoadConfig(path string) *Config {
 
 	file, err := os.ReadFile(path)
 	if err != nil {
-		log.Fatalf("не удалось прочитать config.yaml: %v", err)
+		log.Fatalf("couldn't read config.yaml: %v", err)
 	}
 
 	err = yaml.Unmarshal(file, cfg)
 	if err != nil {
-		log.Fatalf("не удалось распарсить config.yaml: %v", err)
+		log.Fatalf("couldn't parse config.yaml: %v", err)
 	}
 
 	return cfg

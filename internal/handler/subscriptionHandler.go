@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"subscription-aggregator/internal/model"
 	"subscription-aggregator/internal/service"
@@ -38,7 +37,7 @@ func (handler *SubscriptionHandler) CreateSubscriprion(context *gin.Context) {
 	}
 
 	if err := handler.service.Create(&newSub); err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "невозможно создать подписку"})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "impossible to create a subscription"})
 		return
 	}
 	context.JSON(http.StatusCreated, newSub)
@@ -60,7 +59,7 @@ func (handler *SubscriptionHandler) GetSubscriptionByID(context *gin.Context) {
 	}
 	sub, err := handler.service.GetByID(id)
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"error": "подписка не найдена"})
+		context.JSON(http.StatusNotFound, gin.H{"error": "subscription not found"})
 		return
 	}
 	context.JSON(http.StatusOK, sub)
@@ -91,10 +90,10 @@ func (handler *SubscriptionHandler) UpdateSubscription(context *gin.Context) {
 	updatedSub.ID = id
 
 	if err := handler.service.Update(&updatedSub); err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error:": "ошибка при обновлении подписки"})
+		context.JSON(http.StatusInternalServerError, gin.H{"error:": "subscription update error"})
 		return
 	}
-	context.JSON(http.StatusOK, gin.H{"message": "подписка обновлена"})
+	context.JSON(http.StatusOK, gin.H{"message": "the subscription has been updated"})
 }
 
 // @Summary Удаление подписки
@@ -112,11 +111,11 @@ func (handler *SubscriptionHandler) DeleteSubscription(context *gin.Context) {
 		return
 	}
 	if err := handler.service.Delete(id); err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "ошибка при удалении подписки"})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "error when deleting a subscription"})
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"message": "подписка удалена"})
+	context.JSON(http.StatusOK, gin.H{"message": "subscription deleted"})
 }
 
 // @Summary Список подписок
@@ -137,7 +136,7 @@ func (handler *SubscriptionHandler) GetSubscriptionsList(context *gin.Context) {
 	filters.ID = id
 	subs, err := handler.service.GetList(filters)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "ошибка нахождения подписок"})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "error in finding subscriptions"})
 		return
 	}
 
@@ -161,7 +160,6 @@ func (handler *SubscriptionHandler) GetTotal(context *gin.Context) {
 	if !ok {
 		return
 	}
-	fmt.Println("ПОЛУЧЕННЫЙ user_id:", userID)
 	serviceName := context.Query("service_name")
 	fromStr := context.Query("from")
 	toStr := context.Query("to")
@@ -171,7 +169,7 @@ func (handler *SubscriptionHandler) GetTotal(context *gin.Context) {
 	if fromStr != "" {
 		t, err := time.Parse("2006-01-02", fromStr)
 		if err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{"error": "неверная 'from' дата"})
+			context.JSON(http.StatusBadRequest, gin.H{"error": "invalid 'from' data"})
 			return
 		}
 		from = &t
@@ -180,7 +178,7 @@ func (handler *SubscriptionHandler) GetTotal(context *gin.Context) {
 	if toStr != "" {
 		t, err := time.Parse("2006-01-02", toStr)
 		if err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{"error": "неверная 'to' дата"})
+			context.JSON(http.StatusBadRequest, gin.H{"error": "invalid 'to' data"})
 			return
 		}
 		to = &t
@@ -188,9 +186,9 @@ func (handler *SubscriptionHandler) GetTotal(context *gin.Context) {
 
 	total, err := handler.service.GetTotal(userID, serviceName, from, to)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "ошибка при подсчете суммы"})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "error in calculating the total"})
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"всего": total})
+	context.JSON(http.StatusOK, gin.H{"sum": total})
 }
