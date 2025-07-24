@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: subscription-db
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: subscription-app
+    ports:
+      - "${APP_PORT}:8080"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: ["go", "run", "cmd/subscription-aggregator/main.go"]
+
+volumes:
+  postgres_data:

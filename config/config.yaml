@@ -1,0 +1,12 @@
+server:
+  port: "8080"
+  read_timeout: 10
+  write_timeout: 10
+
+database:
+  host: db
+  user: postgres
+  password: 2103
+  dbname: subscriptions
+  port: "5432"
+  sslmode: disable

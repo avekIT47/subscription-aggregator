@@ -1,0 +1,26 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Vendor directory
+/vendor/
+
+# Go modules
+/go.sum
+
+# IDEs
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Env
+.env
