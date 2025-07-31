@@ -15,50 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/subscriptions": {
-            "post": {
-                "description": "Создает новую подписку",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Подписки"
-                ],
-                "summary": "Создание подписки",
-                "parameters": [
-                    {
-                        "description": "Данные подписки",
-                        "name": "subscription",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.Subscription"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/model.Subscription"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/subscriptions/user/{id}/total": {
+        "/subscriptions/user/{user_id}/total": {
             "get": {
                 "description": "Подсчет общей суммы расходов по подпискам пользователя за период",
                 "produces": [
@@ -72,7 +29,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "ID пользователя",
-                        "name": "id",
+                        "name": "user_id",
                         "in": "path",
                         "required": true
                     },
@@ -150,8 +107,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/model.Subscription"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -182,13 +139,34 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Обновленные данные",
-                        "name": "subscription",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.Subscription"
-                        }
+                        "type": "string",
+                        "description": "Новый ID пользователя",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Новое название сервиса",
+                        "name": "service_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Новая стоимость подписки",
+                        "name": "price",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Новая начальная дата (yyyy-mm-dd)",
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Новая конечная дата (yyyy-mm-dd)",
+                        "name": "to",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -224,7 +202,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID пользователя",
+                        "description": "ID подписки",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -252,7 +230,72 @@ const docTemplate = `{
                 }
             }
         },
-        "/subscriptions/{id}/list/": {
+        "/subscriptions/{user_id}": {
+            "post": {
+                "description": "Создает новую подписку",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Подписки"
+                ],
+                "summary": "Создание подписки",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID пользователя",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Название сервиса",
+                        "name": "service_name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Стоимость подписки",
+                        "name": "price",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Начальная дата (yyyy-mm-dd)",
+                        "name": "from",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Конечная дата (yyyy-mm-dd)",
+                        "name": "to",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Subscription"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subscriptions/{user_id}/list/": {
             "post": {
                 "description": "Получение списка подписок по фильтру НИКНЕЙМ ПОЛЬЗОВАТЕЛЯ",
                 "consumes": [
@@ -268,10 +311,23 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "id",
-                        "name": "id",
+                        "description": "user_id",
+                        "name": "user_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -314,6 +370,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "start_date": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }

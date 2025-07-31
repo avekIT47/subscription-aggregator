@@ -16,30 +16,41 @@ type Config struct {
 		Port     string `yaml:"port"`
 		SSLMode  string `yaml:"sslmode"`
 	} `yaml:"database"`
+
+	Server struct {
+		Port string `yaml:"port"`
+	} `yaml:"server"`
 }
 
 func LoadConfig(path string) *Config {
+	log.Printf("Loading config from %s", path)
+
 	cfg := &Config{}
 
 	file, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatalf("couldn't read config.yaml: %v", err)
 	}
+	log.Printf("Config file %s successfully read, size: %d bytes", path, len(file))
 
 	err = yaml.Unmarshal(file, cfg)
 	if err != nil {
 		log.Fatalf("couldn't parse config.yaml: %v", err)
 	}
+	log.Printf("Config file %s successfully parsed", path)
 
 	return cfg
 }
 
 func (context *Config) GetDSN() string {
 	db := context.Database
-	return "host=" + db.Host +
+	dsn := "host=" + db.Host +
 		" user=" + db.User +
 		" password=" + db.Password +
 		" dbname=" + db.DBName +
 		" port=" + db.Port +
 		" sslmode=" + db.SSLMode
+
+	log.Printf("Generated DSN for DB connection: %s", dsn)
+	return dsn
 }
